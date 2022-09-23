@@ -1,8 +1,9 @@
 import axios from 'axios';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import styled, { css } from 'styled-components/macro';
 import GlobalStyle from 'styles/GlobalStyle';
 import { Cart } from 'components';
+import { CartProvider } from 'context/CartContext';
 
 export default function App() {
   let [loading, setLoading] = useState(true);
@@ -58,6 +59,15 @@ export default function App() {
     }));
   }, []);
 
+  // carts 객체를 Context 에서 관리할거고, 
+  // .products 에 개수가 변경되면 handleUpdateAmount 함수를 호출해서 totalAmount 계산을 할 예정
+  const cartsValue = useMemo(
+    () => ({
+      carts,
+      handleUpdateAmount
+    }), [carts]
+  );
+
   if (loading) {
     return <Loading role="alert">제품 정보 로딩 중...</Loading>;
   }
@@ -67,17 +77,14 @@ export default function App() {
   }
 
   return (
-    <>
+    // 정의한 CartProvider 에 정의한 value (useMemo 에 담긴 carts 객체) 를 담아서 연결함
+    // props 로 전달하는 인자형태는 모두 제거함
+    <CartProvider value={cartsValue}>
       <GlobalStyle />
       <Container>
-        <Cart
-          title={carts.title}
-          products={carts.products}
-          total={carts.totalPrice}
-          onUpdate={handleUpdateAmount}
-        />
+        <Cart />
       </Container>
-    </>
+    </CartProvider>
   );
 }
 

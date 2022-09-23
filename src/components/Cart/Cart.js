@@ -1,12 +1,15 @@
 import styled from 'styled-components/macro';
 import CartTitle from './CartTitle';
 import CartList from './CartList';
+import { useCart } from 'context/CartContext';
 
-export function Cart({ title, products, total, onUpdate }) {
+export function Cart() {
+  // 타이틀을 표시해줄거니, carts.title 로 보여줍니다.
+  const { carts, handleUpdateAmount } = useCart();
   return (
     <Container>
-      <CartTitle>{title}</CartTitle>
-      <CartList products={products} total={total} onUpdate={onUpdate} />
+      <CartTitle>{carts.title}</CartTitle>
+      <CartList />
     </Container>
   );
 }
